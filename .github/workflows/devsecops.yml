@@ -139,10 +139,7 @@ jobs:
         sleep 10
         docker ps -a
         docker logs pygoat-test
-        docker exec -it pygoat-test pwd
-        docker exec -it pygoat-test ls -la
-        docker exec -it pygoat-test ls -la /
-        docker exec -it pygoat-test ls -la /app
+        tree -L 2
 
         echo "Testing application availability..."
         for i in {1..10}; do
