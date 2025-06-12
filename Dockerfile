@@ -19,7 +19,7 @@ RUN apt-get update && \
         libc6-dev \
         libffi-dev \
         libssl-dev \
-        && \
+        libpq-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
