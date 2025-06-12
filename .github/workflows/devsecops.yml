@@ -136,7 +136,7 @@ jobs:
         docker run -d -p 8000:8000 --name pygoat-test pygoat-test:latest
         
         echo "Waiting for application to start..."
-        sleep 45
+        sleep 10
         docker ps -a
         docker logs pygoat-test
 
