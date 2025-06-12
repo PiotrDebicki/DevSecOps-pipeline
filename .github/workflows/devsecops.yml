@@ -138,6 +138,7 @@ jobs:
         echo "Waiting for application to start..."
         sleep 45
         docker ps -a
+        docker logs pygoat-test
 
         echo "Testing application availability..."
         for i in {1..10}; do
