@@ -128,12 +128,13 @@ jobs:
       run: |
         docker pull pygoat/pygoat:latest
         docker images
+        docker network create --subnet=172.18.0.0/16 mynet
 
     # DAST - Dynamic Application Security Testing
     - name: Start application for DAST
       run: |
         echo "Starting PyGoat application..."
-        docker run -d -p 8000:8000 --name pygoat-test pygoat/pygoat:latest
+        docker run --net mynet123 --ip 172.18.0.20 -d -p 8000:8000 --name pygoat-test pygoat/pygoat:latest
         
         echo "Waiting for application to start..."
         sleep 10
@@ -155,8 +156,9 @@ jobs:
         echo "Running OWASP ZAP baseline scan..."
         docker pull ghcr.io/zaprozy/zaprozy:nightly
         docker run -v "$(pwd)":/zap/wrk/:rw \
+          --net mynet123 --ip 172.18.0.30 \ 
           -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py \
-          -t http://localhost:8000 \
+          -t http://172.18.0.20:8000 \
           -J zap-baseline-report.json \
           -r zap-baseline-report.html || true
 
@@ -165,9 +167,10 @@ jobs:
       run: |
         echo "Running Nikto web scanner..."
         git clone https://github.com/sullo/nikto.git
-        docker build -t sullo/nikto -f nikito/Dockerfile .
+        docker build -t sullo/nikto -f nikto/Dockerfile .
         docker run --rm --add-host=host.docker.internal:host-gateway \
-          sullo/nikto -h http://localhost:8000 \
+          --net mynet123 --ip 172.18.0.40 \ 
+          sullo/nikto -h http://172.18.0.20:8000 \
           -Format json -output nikto-report.json || true
 
     - name: Stop test container
