@@ -154,7 +154,7 @@ jobs:
     - name: DAST - OWASP ZAP Baseline Scan
       run: |
         echo "Running OWASP ZAP baseline scan..."
-        docker pull ghcr.io/zaprozy/zaprozy:nightly
+        docker pull ghcr.io/zaproxy/zaproxy:nightly
         docker run -v "$(pwd)":/zap/wrk/:rw \
           --net mynet123 --ip 172.18.0.30 \ 
           -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py \
