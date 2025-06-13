@@ -96,13 +96,13 @@ jobs:
         sudo apt-get install trivy
         
         echo "Running Trivy container scan..."
-        trivy image --format json --output trivy-report.json pygoat:pygoat:latest || true
-        trivy image --severity HIGH,CRITICAL pygoat:pygoat:latest || true
+        trivy image --format json --output trivy-report.json pygoat/pygoat:latest || true
+        trivy image --severity HIGH,CRITICAL pygoat/pygoat:latest || true
 
     - name: Upload Security Reports
       uses: actions/upload-artifact@v4
       with:
-        name: security-reports-pygoat:latest
+        name: security-reports-latest
         path: |
           *-report.json
           *.sarif
@@ -124,9 +124,8 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v3
 
-    - name: Build test image
+    - name: Pulling test image
       run: |
-        echo "Building image for DAST testing..."
         docker pull pygoat/pygoat:latest
         docker images
 
@@ -177,7 +176,7 @@ jobs:
     - name: Upload DAST Reports
       uses: actions/upload-artifact@v4
       with:
-        name: dast-reports-pygoat:latest
+        name: dast-reports-${{ github.sha }}
         path: |
           zap-*.json
           zap-*.html
@@ -196,13 +195,13 @@ jobs:
     - name: Download Security Reports
       uses: actions/download-artifact@v3
       with:
-        name: security-reports-pygoat:latest
+        name: security-reports-${{ github.sha }}
         path: ./reports/
 
     - name: Download DAST Reports
       uses: actions/download-artifact@v3
       with:
-        name: dast-reports-pygoat:latest
+        name: dast-reports-${{ github.sha }}
         path: ./reports/
       continue-on-error: true
 
@@ -231,7 +230,7 @@ jobs:
         # Generate summary
         summary = {
             "timestamp": datetime.now().isoformat(),
-            "commit": "pygoat:latest",
+            "commit": "${{ github.sha }}",
             "scans": {}
         }
         
@@ -309,7 +308,7 @@ jobs:
     - name: Upload Security Summary
       uses: actions/upload-artifact@v4
       with:
-        name: security-summary-pygoat:latest
+        name: security-summary-${{ github.sha }}
         path: |
           security-summary.md
           security-summary.json
@@ -355,15 +354,15 @@ jobs:
         context: .
         push: true
         tags: |
-          pygoat:latest
-          pygoat:pygoat:latest
+          ${{ env.IMAGE_NAME }}:latest
+          ${{ env.IMAGE_NAME }}:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
     - name: Run final security check on pushed image
       run: |
         echo "Running final security check on pushed image..."
-        docker pull pygoat:pygoat:latest
+        docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
         
         # Install Trivy for final check
         sudo apt-get update
@@ -373,7 +372,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install trivy
         
-        trivy image --severity HIGH,CRITICAL pygoat:pygoat:latest
+        trivy image --severity HIGH,CRITICAL ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
     - name: Create GitHub Release
       if: github.ref == 'refs/heads/main'
@@ -386,7 +385,7 @@ jobs:
         body: |
           ## 🚀 PyGoat DevSecOps Release v${{ github.run_number }}
           
-          **Docker Image:** `pygoat:pygoat:latest`
+          **Docker Image:** `${{ env.IMAGE_NAME }}:${{ github.sha }}`
           
           ### Security Scans Completed:
           - ✅ SCA (Software Composition Analysis)
