@@ -139,7 +139,6 @@ jobs:
         sleep 10
         docker ps -a
         docker logs pygoat-test
-        tree -L 2
 
         echo "Testing application availability..."
         for i in {1..10}; do
@@ -156,7 +155,7 @@ jobs:
         echo "Running OWASP ZAP baseline scan..."
         docker run -v "$(pwd)":/zap/wrk/:rw \
           -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-          -t http://host.docker.internal:8000 \
+          -t http://localhost:8000 \
           -J zap-baseline-report.json \
           -r zap-baseline-report.html || true
 
@@ -165,7 +164,7 @@ jobs:
       run: |
         echo "Running Nikto web scanner..."
         docker run --rm --add-host=host.docker.internal:host-gateway \
-          ghcr.io/sullo/nikto -h http://host.docker.internal:8000 \
+          ghcr.io/sullo/nikto -h http://localhost:8000 \
           -Format json -output nikto-report.json || true
 
     - name: Stop test container
