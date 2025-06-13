@@ -83,6 +83,7 @@ jobs:
         echo "Building Docker image..."
         docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} .
         docker build -t ${{ env.IMAGE_NAME }}:latest .
+        docker images
 
     # Container Security Scanning
     - name: Container Scan - Trivy
