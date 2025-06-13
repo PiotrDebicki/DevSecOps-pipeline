@@ -163,8 +163,10 @@ jobs:
     - name: DAST - Nikto Web Scanner
       run: |
         echo "Running Nikto web scanner..."
+        git clone https://github.com/sullo/nikto.git
+        docker build -t sullo/nikto -f nikito/Dockerfile .
         docker run --rm --add-host=host.docker.internal:host-gateway \
-          ghcr.io/sullo/nikto -h http://localhost:8000 \
+          sullo/nikto -h http://localhost:8000 \
           -Format json -output nikto-report.json || true
 
     - name: Stop test container
