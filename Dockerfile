@@ -19,7 +19,8 @@ RUN apt-get update && \
         libc6-dev \
         libffi-dev \
         libssl-dev \
-        libpq-dev && \
+        libpq-dev \
+        git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -33,18 +34,14 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Clone the conf files into the docker container
+RUN git clone https://github.com/adeyosemanputra/pygoat.git
 
 # Create necessary directories and set permissions
 RUN mkdir -p /app/media /app/static /app/logs && \
     chown -R pygoat:pygoat /app && \
     chmod -R 755 /app && \
     chmod -R 750 /app/logs
-
-# Remove any potential sensitive files
-RUN find /app -name "*.pyc" -delete && \
-    find /app -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 
 # Security: Remove package managers and compilers after installation
 RUN apt-get remove -y gcc libc6-dev && \
