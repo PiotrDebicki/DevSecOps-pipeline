@@ -156,7 +156,7 @@ jobs:
         echo "Running OWASP ZAP baseline scan..."
         docker pull ghcr.io/zaproxy/zaproxy:nightly
         docker run -v "$(pwd)":/zap/wrk/:rw \
-          --net mynet123 --ip 172.28.1.30 \ 
+          --net mynet123 --ip 172.28.1.30 \
           -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py \
           -t http://172.28.1.20:8000 \
           -J zap-baseline-report.json \
@@ -169,7 +169,7 @@ jobs:
         git clone https://github.com/sullo/nikto.git
         docker build -t sullo/nikto -f nikto/Dockerfile .
         docker run --rm --add-host=host.docker.internal:host-gateway \
-          --net mynet123 --ip 172.28.1.40 \ 
+          --net mynet123 --ip 172.28.1.40 \
           sullo/nikto -h http://172.28.1.20:8000 \
           -Format json -output nikto-report.json || true
 
