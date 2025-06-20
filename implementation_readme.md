@@ -83,7 +83,7 @@ python manage.py runserver
 - **Kryteria**: Naprawienie min. 2-3 podatności HIGH/CRITICAL
 
 #### 5. DAST (Dynamic Application Security Testing)
-- **Narzędzia**: OWASP ZAP, Nikto
+- **Narzędzia**: OWASP ZAP
 - **Cel**: Testowanie działającej aplikacji
 - **Kryteria**: Naprawienie min. 2-3 podatności HIGH/CRITICAL
 

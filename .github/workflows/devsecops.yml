@@ -185,8 +185,8 @@ jobs:
       with:
         name: dast-reports-${{ github.sha }}
         path: |
-          zap-*.json
-          zap-*.html
+          $(pwd)/zap-baseline-report.json
+          $(pwd)/zap-baseline-report.html
         retention-days: 30
 
   security-report:
@@ -201,7 +201,7 @@ jobs:
     - name: Download Security Reports
       uses: actions/download-artifact@v4
       with:
-        name: security-reports-${{ github.sha }}
+        name: security-reports-latest
         path: ./reports/
 
     - name: Download DAST Reports
