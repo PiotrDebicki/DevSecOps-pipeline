@@ -154,24 +154,50 @@ jobs:
     - name: DAST - OWASP ZAP Baseline Scan
       run: |
         echo "Running OWASP ZAP baseline scan..."
+        # Create directory with proper permissions
+        mkdir -p "$(pwd)/zap-output"
+        chmod -R 777 "$(pwd)/zap-output"
+
         docker pull ghcr.io/zaproxy/zaproxy:nightly
-        docker run -v "$(pwd)":/zap/wrk/:rw \
+        docker run -v "$(pwd)/zap-output:/zap/wrk/:rw" \
           --net mynet123 --ip 172.28.1.30 \
           -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py \
           -t http://172.28.1.20:8000 \
-          -J zap-baseline-report.json \
-          -r zap-baseline-report.html || true
-
+          -J /zap/wrk/zap-baseline-report.json \
+          -r /zap/wrk/zap-baseline-report.html \
+          -I || true
+        
+          # Copy reports to expected location
+          cp "$(pwd)/zap-output/zap-baseline-report.json" "$(pwd)/zap-baseline-report.json" || true
+          cp "$(pwd)/zap-output/zap-baseline-report.html" "$(pwd)/zap-baseline-report.html" || true
+          
+          # Show output files
+          ls -la "$(pwd)/zap-output"
+          ls -la "$(pwd)"
 
     - name: DAST - Nikto Web Scanner
       run: |
         echo "Running Nikto web scanner..."
-        git clone https://github.com/sullo/nikto.git
-        docker build -t sullo/nikto -f nikto/Dockerfile .
-        docker run --rm --add-host=host.docker.internal:host-gateway \
-          --net mynet123 --ip 172.28.1.40 \
-          sullo/nikto -h http://172.28.1.20:8000 \
-          -Format json -output nikto-report.json || true
+        # Pull official Nikto Docker image instead of building it
+        docker pull sullo/nikto:latest
+        
+        # Create output directory with proper permissions
+        mkdir -p "$(pwd)/nikto-output"
+        chmod -R 777 "$(pwd)/nikto-output"
+        
+        # Run Nikto scan using the official image
+        docker run --rm \
+          --net mynet123 \
+          -v "$(pwd)/nikto-output:/tmp/nikto_output" \
+          sullo/nikto:latest -h http://172.28.1.20:8000 \
+          -Format json -o /tmp/nikto_output/nikto-report.json || true
+        
+        # Copy the report to the expected location
+        cp "$(pwd)/nikto-output/nikto-report.json" "$(pwd)/nikto-report.json" || true
+        
+        # Show output
+        ls -la "$(pwd)/nikto-output"
+        cat "$(pwd)/nikto-report.json" || echo "No report generated"
 
     - name: Stop test container
       run: |
