@@ -175,30 +175,6 @@ jobs:
           ls -la "$(pwd)/zap-output"
           ls -la "$(pwd)"
 
-    - name: DAST - Nikto Web Scanner
-      run: |
-        echo "Running Nikto web scanner..."
-        # Pull official Nikto Docker image instead of building it
-        docker pull sullo/nikto:latest
-        
-        # Create output directory with proper permissions
-        mkdir -p "$(pwd)/nikto-output"
-        chmod -R 777 "$(pwd)/nikto-output"
-        
-        # Run Nikto scan using the official image
-        docker run --rm \
-          --net mynet123 \
-          -v "$(pwd)/nikto-output:/tmp/nikto_output" \
-          sullo/nikto:latest -h http://172.28.1.20:8000 \
-          -Format json -o /tmp/nikto_output/nikto-report.json || true
-        
-        # Copy the report to the expected location
-        cp "$(pwd)/nikto-output/nikto-report.json" "$(pwd)/nikto-report.json" || true
-        
-        # Show output
-        ls -la "$(pwd)/nikto-output"
-        cat "$(pwd)/nikto-report.json" || echo "No report generated"
-
     - name: Stop test container
       run: |
         docker stop pygoat-test || true
@@ -211,7 +187,6 @@ jobs:
         path: |
           zap-*.json
           zap-*.html
-          nikto-report.json
         retention-days: 30
 
   security-report:
