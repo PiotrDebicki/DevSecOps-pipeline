@@ -167,8 +167,8 @@ jobs:
           --net mynet123 --ip 172.28.1.30 \
           -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py \
           -t http://172.28.1.20:8000 \
-          -J /zap/wrk/zap-baseline-report.json \
-          -r /zap/wrk/zap-baseline-report.html \
+          -J zap-baseline-report.json \
+          -r zap-baseline-report.html \
           -I || true
         
           # Copy reports to expected location
