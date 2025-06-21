@@ -163,7 +163,7 @@ jobs:
         chmod -R 777 zap-output
 
         docker pull ghcr.io/zaproxy/zaproxy:nightly
-        docker run --user root \
+        docker run --user root --name zap \
           -v zap-output:/zap/wrk/:rw \
           --net mynet123 --ip 172.28.1.30 \
           -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py \
@@ -172,6 +172,8 @@ jobs:
           -r zap-baseline-report.html \
           -I || true
         
+          docker exec -it zap ls -la
+
           # Copy reports to expected location
           cp zap-output/zap-baseline-report.json zap-baseline-report.json || true
           cp zap-output/zap-baseline-report.html zap-baseline-report.html || true
