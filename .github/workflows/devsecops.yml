@@ -10,6 +10,7 @@ env:
   REGISTRY: docker.io
   IMAGE_NAME: pygoat/pygoat
   PYTHON_VERSION: '3.9'
+  NEW_IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/pygoat
 
 permissions:
   contents: write
@@ -158,11 +159,11 @@ jobs:
       run: |
         echo "Running OWASP ZAP baseline scan..."
         # Create directory with proper permissions
-        mkdir -p "$(pwd)/zap-output"
-        chmod -R 777 "$(pwd)/zap-output"
+        mkdir -p zap-output
+        chmod -R 777 zap-output
 
         docker pull ghcr.io/zaproxy/zaproxy:nightly
-        docker run -v "$(pwd)/zap-output:/zap/wrk/:rw" \
+        docker run -v zap-output:/zap/wrk/:rw \
           --net mynet123 --ip 172.28.1.30 \
           -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py \
           -t http://172.28.1.20:8000 \
@@ -171,12 +172,12 @@ jobs:
           -I || true
         
           # Copy reports to expected location
-          cp "$(pwd)/zap-output/zap-baseline-report.json" "$(pwd)/zap-baseline-report.json" || true
-          cp "$(pwd)/zap-output/zap-baseline-report.html" "$(pwd)/zap-baseline-report.html" || true
+          cp zap-output/zap-baseline-report.json zap-baseline-report.json || true
+          cp zap-output/zap-baseline-report.html zap-baseline-report.html || true
           
           # Show output files
-          ls -la "$(pwd)/zap-output"
-          ls -la "$(pwd)"
+          ls -la zap-output
+          ls -la 
 
     - name: Stop test container
       run: |
@@ -188,8 +189,8 @@ jobs:
       with:
         name: dast-reports-${{ github.sha }}
         path: |
-          $(pwd)/zap-baseline-report.json
-          $(pwd)/zap-baseline-report.html
+          zap-baseline-report.json
+          zap-baseline-report.html
         retention-days: 30
 
   security-report:
@@ -356,9 +357,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Set image name
-      run: echo "NEW_IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/pygoat" >> $GITHUB_ENV
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
