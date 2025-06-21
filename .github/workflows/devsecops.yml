@@ -172,7 +172,7 @@ jobs:
           -r zap-baseline-report.html \
           -I || true
         
-          docker exec -it zap ls -la
+          docker exec zap ls -la
 
           # Copy reports to expected location
           cp zap-output/zap-baseline-report.json zap-baseline-report.json || true
