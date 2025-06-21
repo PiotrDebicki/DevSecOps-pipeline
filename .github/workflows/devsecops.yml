@@ -164,15 +164,13 @@ jobs:
 
         docker pull ghcr.io/zaproxy/zaproxy:nightly
         docker run --user root --name zap \
-          -v zap-output:/zap/wrk/:rw \
+          --mount type=bind,source="$(pwd)/zap-output",target=/zap/wrk \
           --net mynet123 --ip 172.28.1.30 \
           -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py \
           -t http://172.28.1.20:8000 \
           -J zap-baseline-report.json \
           -r zap-baseline-report.html \
           -I || true
-        
-        docker logs zap
 
         # Copy reports to expected location
         cp zap-output/zap-baseline-report.json zap-baseline-report.json || true
