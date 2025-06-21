@@ -163,7 +163,8 @@ jobs:
         chmod -R 777 zap-output
 
         docker pull ghcr.io/zaproxy/zaproxy:nightly
-        docker run -v zap-output:/zap/wrk/:rw \
+        docker run --user root \
+          -v zap-output:/zap/wrk/:rw \
           --net mynet123 --ip 172.28.1.30 \
           -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py \
           -t http://172.28.1.20:8000 \
