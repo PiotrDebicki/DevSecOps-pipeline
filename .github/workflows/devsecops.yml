@@ -11,6 +11,9 @@ env:
   IMAGE_NAME: pygoat/pygoat
   PYTHON_VERSION: '3.9'
 
+permissions:
+  contents: write
+
 jobs:
   security-analysis:
     runs-on: ubuntu-latest
