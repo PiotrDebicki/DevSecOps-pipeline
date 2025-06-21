@@ -172,15 +172,15 @@ jobs:
           -r zap-baseline-report.html \
           -I || true
         
-          docker exec zap ls -la
+        docker logs zap
 
-          # Copy reports to expected location
-          cp zap-output/zap-baseline-report.json zap-baseline-report.json || true
-          cp zap-output/zap-baseline-report.html zap-baseline-report.html || true
-          
-          # Show output files
-          ls -la zap-output
-          ls -la 
+        # Copy reports to expected location
+        cp zap-output/zap-baseline-report.json zap-baseline-report.json || true
+        cp zap-output/zap-baseline-report.html zap-baseline-report.html || true
+        
+        # Show output files
+        ls -la zap-output
+        ls -la 
 
     - name: Stop test container
       run: |
