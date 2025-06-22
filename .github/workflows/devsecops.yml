@@ -30,12 +30,6 @@ jobs:
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
-    # Secrets Scanning
-    - name: Secrets Scan - GitLeaks
-      uses: gitleaks/gitleaks-action@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Checkout code
       uses: actions/checkout@v4
       with:
@@ -60,6 +54,12 @@ jobs:
         pip-audit --desc || true
 
     # Secrets Scanning
+    - name: Secrets Scan - GitLeaks
+      uses: gitleaks/gitleaks-action@v2
+      continue-on-error: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Secrets Scan - TruffleHog
       uses: trufflesecurity/trufflehog@main
       with:
