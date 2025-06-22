@@ -49,7 +49,7 @@ asgiref==3.7.2
 pytz==2023.3
 
 # Additional security dependencies
-django-security==0.17.0
+django-security
 django-csp==3.7
 django-ratelimit==4.1.0
 
