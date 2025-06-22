@@ -25,15 +25,21 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        repository: adeyosemanputra/pygoat
-
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+
+    # Secrets Scanning
+    - name: Secrets Scan - GitLeaks
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        repository: adeyosemanputra/pygoat
 
     # SCA - Software Composition Analysis
     - name: Install dependencies
@@ -53,13 +59,7 @@ jobs:
         pip-audit --format json --output pip-audit-report.json || true
         pip-audit --desc || true
 
-
     # Secrets Scanning
-    - name: Secrets Scan - GitLeaks
-      uses: gitleaks/gitleaks-action@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Secrets Scan - TruffleHog
       uses: trufflesecurity/trufflehog@main
       with:
