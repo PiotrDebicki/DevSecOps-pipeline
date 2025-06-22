@@ -39,8 +39,8 @@ jobs:
     - name: SCA - Safety Check (High/Critical)
       run: |
         echo "Running Safety check for known vulnerabilities..."
-        safety check --full-report > safety-report.json || true
-        safety check --full-report | grep -i "high\|critical" || true
+        safety scan --json > safety-report.json || true
+        safety scan | grep -i "high\|critical" || true
 
     - name: SCA - Pip Audit
       run: |
