@@ -358,17 +358,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        path: DevSecOps
-
-    - name: Run security repairment script
-      run: |
-        ls -la
-        ls -la DevSecOps
+        repository: adeyosemanputra/pygoat
 
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        repository: adeyosemanputra/pygoat
+        path: DevSecOps
 
     - name: Run security repairment script
       run: |
