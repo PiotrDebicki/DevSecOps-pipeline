@@ -361,6 +361,7 @@ jobs:
 
     - name: Run security repairment script
       run: |
+        ls -la
         chmod +x fix_vulnerabilities_script.sh
         ./fix_vulnerabilities_script.sh
 
