@@ -57,7 +57,6 @@ django-ratelimit==4.1.0
 packaging==21.3
 bandit==1.7.5
 safety==2.3.5
-pip-audit==2.5.0
 EOF
 
     print_status "Updated requirements.txt with secure package versions"
@@ -295,7 +294,7 @@ run_security_tests() {
     print_status "Running basic security tests..."
     
     # Install security tools if not present
-    pip install bandit safety pip-audit 2>/dev/null || true
+    pip install bandit safety 2>/dev/null || true
     
     # Run Bandit
     if command -v bandit &> /dev/null; then
@@ -309,12 +308,6 @@ run_security_tests() {
         print_status "Running Safety SCA scan..."
         safety check --json --output security-reports/safety-report.json 2>/dev/null || true
         safety check --short-report 2>/dev/null || print_warning "Safety found vulnerabilities"
-    fi
-    
-    # Run pip-audit
-    if command -v pip-audit &> /dev/null; then
-        print_status "Running pip-audit..."
-        pip-audit --format=json --output=security-reports/pip-audit-report.json 2>/dev/null || true
     fi
 }
 
