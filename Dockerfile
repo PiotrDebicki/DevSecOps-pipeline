@@ -1,6 +1,6 @@
 # Secure Dockerfile for PyGoat - DevSecOps Implementation
 # Base image - using specific version for security
-FROM python:3.9.18-slim-bullseye
+FROM python:3.11.0b1-buster
 
 # Metadata labels
 LABEL maintainer="devsecops-team"
@@ -29,6 +29,7 @@ WORKDIR /app
 
 # Copy requirements first for better Docker layer caching
 COPY requirements.txt .
+COPY . /app/
 
 # Upgrade pip and install Python dependencies
 RUN python -m pip install --upgrade pip && \

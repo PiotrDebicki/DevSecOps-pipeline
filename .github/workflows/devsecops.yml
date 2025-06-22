@@ -363,6 +363,7 @@ jobs:
 
     - name: Run security repairment script
       run: |
+        cp ./DevSecOps/Dockerfile Dockerfile
         chmod +x ./DevSecOps/fix_vulnerabilities_script.sh
         ./DevSecOps/fix_vulnerabilities_script.sh
 
