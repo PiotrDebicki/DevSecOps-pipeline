@@ -56,7 +56,7 @@ django-ratelimit==4.1.0
 # Development dependencies
 bandit==1.7.5
 safety==2.3.5
-pip-audit==2.6.1
+pip-audit==2.5.0
 EOF
 
     print_status "Updated requirements.txt with secure package versions"

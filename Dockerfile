@@ -35,9 +35,6 @@ COPY . /app/
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
-# Clone the conf files into the docker container
-RUN git clone https://github.com/adeyosemanputra/pygoat.git
-
 # Create necessary directories and set permissions
 RUN mkdir -p /app/media /app/static /app/logs && \
     chown -R pygoat:pygoat /app && \
