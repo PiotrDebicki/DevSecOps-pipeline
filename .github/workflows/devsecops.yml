@@ -349,6 +349,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Run security repairment script
+      run: |
+        chmod +x fix_vulnerabilities_script.sh
+        ./fix_vulnerabilities_script.sh
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
