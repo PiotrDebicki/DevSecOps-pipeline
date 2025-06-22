@@ -32,8 +32,7 @@ COPY requirements.txt .
 COPY . /app/
 
 # Upgrade pip and install Python dependencies
-RUN python -m pip install --upgrade pip && \
-    pip install --no-cache-dir --upgrade pip setuptools wheel && \
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
 # Clone the conf files into the docker container
