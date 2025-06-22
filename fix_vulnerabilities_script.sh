@@ -54,6 +54,7 @@ django-csp==3.7
 django-ratelimit==4.1.0
 
 # Development dependencies
+packaging==21.3
 bandit==1.7.5
 safety==2.3.5
 pip-audit==2.5.0
